@@ -16,13 +16,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = require("./app/models");
-db.sequelize.sync()
+db.sequelize
+  .authenticate()
   .then(() => {
-    console.log("Synced db.");
+    console.log("Connection has been established successfully.");
   })
   .catch((err) => {
-    console.log("Failed to sync db: " + err.message);
+    console.error("Unable to connect to the database:", err);
   });
+// db.sequelize.sync()
+//   .then(() => {
+//     console.log("Synced db.");
+//   })
+//   .catch((err) => {
+//     console.log("Failed to sync db: " + err.message);
+//   });
 
 // // drop the table if it already exists
 // db.sequelize.sync({ force: true }).then(() => {
@@ -34,10 +42,10 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to bezkoder application." });
 });
 
-require("./app/routes/turorial.routes")(app);
+require("./app/routes/customer.routes")(app);
 
 // set port, listen for requests
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8081;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });

@@ -1,6 +1,6 @@
 const dbConfig = require("../config/db.config.js");
 
-const Sequelize = require("sequelize");
+const {Sequelize, DataTypes} = require("sequelize");
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
   dialect: dbConfig.dialect,
@@ -18,6 +18,14 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.tutorials = require("./tutorial.model.js")(sequelize, Sequelize);
+db.customers = require("./customer.model.js")(sequelize, Sequelize, DataTypes);
+db.accounts = require("./account.model.js")(sequelize, Sequelize, DataTypes);
+db.transactions = require("./transaction.model.js")(sequelize, Sequelize, DataTypes);
+
+
+db.accounts.belongsTo(db.customers, { foreignKey: "customer_id" });
+db.transactions.belongsTo(db.accounts, { foreignKey: "source_account_id" });
+db.transactions.belongsTo(db.accounts, { foreignKey: "target_account_id" });
+
 
 module.exports = db;
